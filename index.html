@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Network Intrusion Detection Analyzer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>🛡️ Network Intrusion Threat Predictor</h2>
+            <a href="/dashboard" class="btn btn-outline-secondary">📊 Open System Dashboard</a>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card p-4 shadow-sm">
+                    <h4 class="mb-3">Live Packet Parameters</h4>
+                    <form action="/predict" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Duration (seconds)</label>
+                            <input type="number" step="0.01" name="duration" class="form-control" value="0.5" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Protocol</label>
+                            <select name="protocol" class="form-select">
+                               <option value="TCP">TCP</option>
+                               <option value="UDP">UDP</option>
+                               <option value="ICMP">ICMP</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Packet Size (bytes)</label>
+                            <input type="number" name="packet_size" class="form-control" value="1500" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Source IP Connection Frequency</label>
+                            <input type="number" name="source_ip_patterns" class="form-control" value="5" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Destination Port Number</label>
+                            <input type="number" name="port_number" class="form-control" value="443" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Analyze Packet Stream</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card p-4 shadow-sm bg-white h-100 d-flex flex-column justify-content-center text-center">
+                    {% if submitted %}
+                        <h4 class="text-muted">Analysis Result</h4>
+                        {% if prediction == 'Normal' %}
+                            <div class="alert alert-success my-3 p-4">
+                                <h1 class="display-5">🟢 Safe</h1>
+                                <p class="mb-0">Traffic identified as <strong>Normal Traffic</strong>.</p>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger my-3 p-4">
+                                <h1 class="display-5">🚨 Threat Detected</h1>
+                                <p class="mb-0">Classification Type: <strong>{{ prediction }}</strong></p>
+                            </div>
+                        {% endif %}
+                        <h5>Confidence Rating: <span class="badge bg-dark">{{ confidence }}%</span></h5>
+                    {% elif error %}
+                        <div class="alert alert-warning">{{ error }}</div>
+                    {% else %}
+                        <p class="text-muted fs-5">Fill out data metrics on the left panel to execute real-time intrusion evaluations.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
